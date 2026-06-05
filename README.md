@@ -26,9 +26,12 @@ OLTP → Bronze → Silver → Gold → Power BI
 - Data Quality Checks
 - Star Schema Modeling
   
+## Project Structure
+```
 fmcg-lakehouse-project/
 │
 ├── README.md
+│
 ├── architecture/
 │   └── architecture.png
 │
@@ -55,11 +58,13 @@ fmcg-lakehouse-project/
 └── powerbi/
     ├── dashboard.png
     └── model.png
+```
     
-fmcg_lakehouse_architecture
+## fmcg_lakehouse_architecture
 <img width="2048" height="1044" alt="Presentation1" src="https://github.com/user-attachments/assets/c8f949d3-d960-4cf9-84fc-77d6bcd43881" />
 
-Data Flow
+## Data Flow
+```
 OLTP Sources
       │
       ▼
@@ -79,3 +84,4 @@ Gold Layer
       │
       ▼
 Power BI
+```
