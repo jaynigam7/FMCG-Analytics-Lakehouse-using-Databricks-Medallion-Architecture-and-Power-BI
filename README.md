@@ -85,3 +85,5 @@ Gold Layer
       ▼
 Power BI
 ```
+## PowerBI Dashboard
+<img width="1402" height="1081" alt="fmcg dashboard-2" src="https://github.com/user-attachments/assets/cd83f164-a76f-4040-94a3-662e9aed2c01" />
