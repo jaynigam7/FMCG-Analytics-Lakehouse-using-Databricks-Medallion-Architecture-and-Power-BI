@@ -35,8 +35,6 @@ print("Base Path: ", base_path)
 print("Landing Path: ", landing_path)
 print("Processed Path: ", processed_path)
 
-
-# define the tables
 bronze_table = f"{catalog}.{bronze_schema}.{data_source}"
 silver_table = f"{catalog}.{silver_schema}.{data_source}"
 gold_table = f"{catalog}.{gold_schema}.sb_fact_{data_source}"
@@ -108,11 +106,8 @@ df_orders.show(2)
 
 # COMMAND ----------
 
-# 1. Keep only rows where order_qty is present
 df_orders = df_orders.filter(F.col("order_qty").isNotNull())
 
-
-# 2. Clean customer_id → keep numeric, else set to 999999
 df_orders = df_orders.withColumn(
     "customer_id",
     F.when(F.col("customer_id").rlike("^[0-9]+$"), F.col("customer_id"))
@@ -120,14 +115,11 @@ df_orders = df_orders.withColumn(
      .cast("string")
 )
 
-# 3. Remove weekday name from the date text
-#    "Tuesday, July 01, 2025" → "July 01, 2025"
 df_orders = df_orders.withColumn(
     "order_placement_date",
     F.regexp_replace(F.col("order_placement_date"), r"^[A-Za-z]+,\s*", "")
 )
 
-# 4. Parse order_placement_date using multiple possible formats
 df_orders = df_orders.withColumn(
     "order_placement_date",
     F.coalesce(
@@ -138,15 +130,12 @@ df_orders = df_orders.withColumn(
     )
 )
 
-# 5. Drop duplicates
 df_orders = df_orders.dropDuplicates(["order_id", "order_placement_date", "customer_id", "product_id", "order_qty"])
 
-# 5. convert product id to string
 df_orders = df_orders.withColumn('product_id', F.col('product_id').cast('string'))
 
 # COMMAND ----------
 
-# check what's the maximum and minimum date
 df_orders.agg(
     F.min("order_placement_date").alias("min_date"),
     F.max("order_placement_date").alias("max_date")
@@ -180,8 +169,6 @@ else:
 # MAGIC ### Staging table to process just the arrived incremenal data
 
 # COMMAND ----------
-
-# stagging for incremental data
 
 df_joined.write\
  .format("delta") \
@@ -229,10 +216,7 @@ else:
 
 # MAGIC %md
 # MAGIC **Incremental Load**
-
-# COMMAND ----------
-
-# df_child = your incremental daily rows
+# COMMAND -----------
 
 df_child =  spark.sql(f"SELECT order_placement_date as date FROM {catalog}.{silver_schema}.staging_{data_source}")
 
